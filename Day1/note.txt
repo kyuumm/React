@@ -1,0 +1,27 @@
+react是一个构建web和原生交互界面的库
+
+创建react开发环境工具
+npx create-react-app react-basic
+npx:nodejs工具命令
+中间：核心包，用于创建react项目
+react-basic:react项目的名称
+
+跑项目：
+  cd react-basic
+  npm start
+
+  npm build是打包（开发完毕后使用）
+
+JSX=javascript+XML(HTML)
+    function App() {
+      return (
+        <div className="App">
+          this is App
+        </div>
+      );
+    }
+
+优势：HTML的声明式模板写法，JS的可编程能力
+是js的语法扩展，需要通过解析工具解析后才能运行
+是React中编写UI模板的方式
+运行网站：Babel
