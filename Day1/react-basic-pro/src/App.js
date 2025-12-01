@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import './App.scss'
 import avatar from './images/bozai.png'
 import _ from 'lodash'
 import classNames from 'classnames'
+import { v4 as uuidV4 } from 'uuid'
+import dayjs from 'dayjs'
 
 /**
  * 评论列表的渲染和操作
@@ -91,7 +93,7 @@ const App = () => {
 
     //基于列表排序
     //使用lodash
-    if (type == 'hot') {
+    if (type === 'hot') {
       setCommentList(_.orderBy(commentList, 'like', 'desc'))
     } else {
       setCommentList(_.orderBy(commentList, 'ctime', 'desc'))
@@ -99,6 +101,31 @@ const App = () => {
     }
   }
   //filter函数，为true就保留，false舍去
+
+  //发表评论
+  const [content, setContent] = useState('')
+  const inputRef = useRef(null)
+  const handlePublish = () => {
+    setCommentList([
+      ...commentList,
+      {
+        rpid: uuidV4(),
+        user: {
+          uid: '30009257',
+          avatar,
+          uname: '黑马前端',
+        },
+        content: content,
+        ctime: dayjs(new Date()).format('MM-DD HH:mm'),
+        like: 66,
+      },
+    ])
+    //清空输入框
+    //重新聚焦
+    setContent('');
+    inputRef.current.focus()
+  }
+
   return (
     <div className="app">
       {/* 导航 Tab */}
@@ -115,7 +142,7 @@ const App = () => {
               <span key={item.type}
                 onClick={() => handleTabChange(item.type)}
                 // className={`nav-item ${type === item.type && 'active'}`}>{item.text}</span>
-                className={classNames('nav-item', { active: type == item.type })}>{item.text}</span>
+                className={classNames('nav-item', { active: type === item.type })}>{item.text}</span>
               //classnames优化类名控制
               // key表示要控制的类名，value表示条件，true时类名显示
             ))}
@@ -137,10 +164,13 @@ const App = () => {
             <textarea
               className="reply-box-textarea"
               placeholder="发一条友善的评论"
+              ref={inputRef}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
             />
             {/* 发布按钮 */}
             <div className="reply-box-send">
-              <div className="send-text">发布</div>
+              <div className="send-text" onClick={handlePublish}>发布</div>
             </div>
           </div>
         </div>
