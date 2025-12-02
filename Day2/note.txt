@@ -24,3 +24,59 @@ return
 <input type='text' ref={inputRef}>
 <button onClick={showDom}>get dom</button>
 </input>
+
+母子通信
+function Child(props){
+  return <div>this is child ,{props.ChildName},标签:{props.grandChild}</div>
+}
+
+1.props可传递任意的数据数字、字符串、布尔值、数组、对象、函数、JSX
+function Parent(){
+  const name='this is parent'
+  return (
+    <div>
+      <Child ChildName={name}
+        age={18}
+      grandChild={<span>this is grandChild</span>}
+      />
+    </div>
+
+
+    <Child>
+      <span>this is span</span>
+    </Child>
+在 <Child> ... </Child> 标签包裹的内容
+会被自动放到 props.children 里
+  )
+}
+子组件只能读取props中的数据，不能直接进行修改,亲组件的数据只能由亲组件修改
+
+真恶心啊父子名称，为什么这么翻译？
+
+父子组件通信：子传父：在子组件中调用父组件中的函数并传递参数
+function Child({onGetChildMsg}){
+  const ChildMsg='this is childs msg'
+  return (
+    <div>
+    <button onClick={()=>onGetChildMsg(ChildMsg)}>  lickhere  </button>
+    </div>
+  )
+}
+
+function Parent(){
+  const [msg,setMsg]=useState('')
+  const getMsg=(msg)=>{
+    console.log(msg);
+    setMsg(msg)
+  }
+
+  const name='this is parent'
+
+  return (
+    <div>
+      {msg}
+      <Child 
+        onGetChildMsg={getMsg}
+      />
+    </div>
+)}
