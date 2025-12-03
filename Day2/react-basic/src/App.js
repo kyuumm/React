@@ -1,0 +1,33 @@
+import { useEffect, useState } from "react";
+const URL = 'http://geek.itheima.net/v1_0/channels'
+
+
+function Son() {
+  //渲染时开启一个定时器
+  useEffect(() => {
+    const timer = setInterval(() => {
+      console.log('定时器');
+
+    }, 1000)
+
+    return () => {
+      //清除副作用
+      clearInterval(timer);
+    }
+
+  }, [])
+  return <div>this is son</div>
+}
+function App() {
+  //通过条件渲染模拟组件卸载
+  const [show, setShow] = useState(true)
+
+  return (
+    <div>
+      {show && <Son />}
+      <button onClick={() => setShow(false)}>uninstall</button>
+    </div>
+  );
+}
+
+export default App;
