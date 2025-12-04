@@ -1,31 +1,26 @@
 import { useEffect, useState } from "react";
 const URL = 'http://geek.itheima.net/v1_0/channels'
 
+//自定义hook函数
+function useToggle() {
+  const [value, setValue] = useState()
+  const toggle = () => setValue(!value)
 
-function Son() {
-  //渲染时开启一个定时器
-  useEffect(() => {
-    const timer = setInterval(() => {
-      console.log('定时器');
+  return {
+    value,
+    toggle
+  }
 
-    }, 1000)
-
-    return () => {
-      //清除副作用
-      clearInterval(timer);
-    }
-
-  }, [])
-  return <div>this is son</div>
 }
+
 function App() {
-  //通过条件渲染模拟组件卸载
-  const [show, setShow] = useState(true)
+
+  const { value, toggle } = useToggle()
 
   return (
     <div>
-      {show && <Son />}
-      <button onClick={() => setShow(false)}>uninstall</button>
+      {value && <div>this is div</div>}
+      <button onClick={toggle}>toggle</button>
     </div>
   );
 }

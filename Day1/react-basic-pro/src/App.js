@@ -1,10 +1,12 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import './App.scss'
 import avatar from './images/bozai.png'
 import _ from 'lodash'
 import classNames from 'classnames'
 import { v4 as uuidV4 } from 'uuid'
 import dayjs from 'dayjs'
+import axios from 'axios'
+
 
 /**
  * 评论列表的渲染和操作
@@ -70,17 +72,97 @@ const user = {
  * 2. 评论列表排序
  *  最热 => 喜欢数量降序
  *  最新 => 创建时间降序
- */
+*/
 
 // 导航 Tab 数组
 const tabs = [
   { type: 'hot', text: '最热' },
   { type: 'time', text: '最新' },
 ]
+function useGetList() {
+  //获取接口数据渲染
+
+  const [commentList, setCommentList] = useState([])
+  useEffect(() => {
+    //请求数据
+    async function getList() {
+      const res = await axios.get('http://localhost:3004/list')
+      setCommentList(res.data)
+    }
+    getList()
+  }, [])
+
+  return {
+    commentList,
+    setCommentList
+  }
+}
+
+//封装请求数据的hook
+
+
+//封装item组件
+function Item({ item, onDel }) {
+  return (
+    <div className="reply-item">
+      {/* 头像 */}
+      <div className="root-reply-avatar">
+        <div className="bili-avatar">
+          <img
+            className="bili-avatar-img"
+            alt=""
+            src={item.user.avatar}
+          />
+        </div>
+      </div>
+
+      <div className="content-wrap">
+        {/* 用户名 */}
+        <div className="user-info">
+          <div className="user-name">{item.user.uname}</div>
+        </div>
+        {/* 评论内容 */}
+        <div className="root-reply">
+          <span className="reply-content">{item.content}</span>
+          <div className="reply-info">
+            {/* 评论时间 */}
+            <span className="reply-time">{item.ctime}</span>
+            {/* 评论数量 */}
+            <span className="reply-time">点赞数:{item.like}</span>
+            {user.uid === item.user.uid && <span onClick={() => onDel(item.rpid)} className="delete-btn">
+              删除
+            </span>}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+
+
+
 const App = () => {
   //渲染评论列表
   //使用useState维护List
-  const [commentList, setCommentList] = useState(_.orderBy(list, 'like', 'desc'));
+  // const [commentList, setCommentList] = useState(_.orderBy(list, 'like', 'desc'));
+
+  // //获取接口数据渲染
+
+  // const [commentList, setCommentList] = useState([])
+  // useEffect(() => {
+  //   //请求数据
+  //   async function getList() {
+  //     const res = await axios.get('http://localhost:3004/list')
+  //     setCommentList(res.data)
+  //   }
+  //   getList()
+  // }, [])
+  const { commentList, setCommentList } = useGetList();
+
+
+
 
   const handleDel = (id) => {
     setCommentList(commentList.filter(item => item.rpid !== id))
@@ -178,39 +260,7 @@ const App = () => {
         <div className="reply-list">
           {/* 评论项 */}
           {commentList.map(item => (
-            <div key={item.rpid} className="reply-item">
-              {/* 头像 */}
-              <div className="root-reply-avatar">
-                <div className="bili-avatar">
-                  <img
-                    className="bili-avatar-img"
-                    alt=""
-                    src={item.user.avatar}
-                  />
-                </div>
-              </div>
-
-              <div className="content-wrap">
-                {/* 用户名 */}
-                <div className="user-info">
-                  <div className="user-name">{item.user.uname}</div>
-                </div>
-                {/* 评论内容 */}
-                <div className="root-reply">
-                  <span className="reply-content">{item.content}</span>
-                  <div className="reply-info">
-                    {/* 评论时间 */}
-                    <span className="reply-time">{item.ctime}</span>
-                    {/* 评论数量 */}
-                    <span className="reply-time">点赞数:{item.like}</span>
-                    {user.uid === item.user.uid && <span onClick={() => handleDel(item.rpid)} className="delete-btn">
-                      删除
-                    </span>}
-
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Item key={item.rpid} item={item} onDel={handleDel} />
           ))}
 
 

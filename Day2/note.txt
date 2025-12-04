@@ -290,3 +290,76 @@ export default App;
 
 还行
 
+---------------------------------清除副作用
+import { useEffect, useState } from "react";
+const URL = 'http://geek.itheima.net/v1_0/channels'
+
+
+function Son() {
+  //渲染时开启一个定时器
+  useEffect(() => {
+    const timer = setInterval(() => {
+      console.log('定时器');
+
+    }, 1000)
+
+    return () => {
+      //清除副作用
+      clearInterval(timer);
+    }
+
+  }, [])
+  return <div>this is son</div>
+}
+function App() {
+  //通过条件渲染模拟组件卸载
+  const [show, setShow] = useState(true)
+
+  return (
+    <div>
+      {show && <Son />}
+      <button onClick={() => setShow(false)}>uninstall</button>
+    </div>
+  );
+}
+
+export default App;
+
+----------------------------------------自定义hook
+import { useEffect, useState } from "react";
+const URL = 'http://geek.itheima.net/v1_0/channels'
+
+//自定义hook函数
+function useToggle() {
+  const [value, setValue] = useState()
+  const toggle = () => setValue(!value)
+
+  return {
+    value,
+    toggle
+  }
+
+}
+
+function App() {
+
+  const { value, toggle } = useToggle()
+
+  return (
+    <div>
+      {value && <div>this is div</div>}
+      <button onClick={toggle}>toggle</button>
+    </div>
+  );
+}
+
+export default App;
+
+----------------reactHook使用规则
+是能在组件中或者其他自定义hook函数中调用
+只能在组件的顶层调用，不能嵌套在if for 其他函数中
+
+React 在渲染时是 靠调用顺序来记住你的 Hook 状态 的。
+如果把 Hook 写在 if / for / 普通函数中，
+会让 Hook 的“顺序”在不同渲染中发生变化，
+那 React 就不知道哪个状态对应哪个 Hook 了。
