@@ -13,17 +13,13 @@
     // 数据不可变：基于原始状态生成一个新的状态
     if (action.type === 'INCREMENT') {
       return { count: state.count + 1 }
-
     }
-
     if (action.type === 'DECREMENT') {
       return { count: state.count - 1 }
 
     }
 
     return state;
-
-
   }
   // 2. 使用reducer函数生成store实例
 
@@ -60,3 +56,8 @@
 
 </script>
 <!-- 这么抽象。。 -->
+<!-- 
+view->Action->Reducer->Store(state  state state ...) ->view
+
+
+ -->

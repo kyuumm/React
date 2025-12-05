@@ -1,0 +1,25 @@
+React 使用redux：
+1,Redux Toolkit
+  简化store的配置方式
+  内置immer支持可变式状态修改
+  内置thunk更好的异步创建
+2,react-reducx 用来链接redux和react
+
+npx create-react-app react-redux   //创建react环境
+npm i @reduxjs/toolkit react-redux  //下载工具包（进入项目文件夹里下）
+npm run start
+
+在package.json里可以看见下载的工具包
+
+在src下创建store文件夹。下置index.js和modules文件夹，modules文件夹下置俩js文件
+================
+RTK 允许你的项目有很多模块，比如：
+
+counter（计数模块）
+
+user（用户信息模块）
+
+todos（任务模块）
+
+它们最后都要“拼”成一个大的 store。
+configureStore 就是把所有区域整合成一个总仓库。
