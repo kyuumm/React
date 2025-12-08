@@ -24,6 +24,6 @@ todos（任务模块）
 它们最后都要“拼”成一个大的 store。
 configureStore 就是把所有区域整合成一个总仓库。
 
-//总是在逃避难题。
+
 
 下载redux dev tools
