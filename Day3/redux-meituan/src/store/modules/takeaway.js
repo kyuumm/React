@@ -7,7 +7,9 @@ const foodsStore = createSlice({
   initialState: {
     foodsList: [],
     //菜单激活下标
-    activeIndex: 0
+    activeIndex: 0,
+    //cart
+    cartList: []
   },
   reducers: {
     setFoodList(state, action) {
@@ -15,12 +17,21 @@ const foodsStore = createSlice({
     },
     changeActiveIndex(state, action) {
       state.activeIndex = action.payload;
+    },
+    addCart(state, action) {
+      // 是否添加过?以action.payload.id去cartList中匹配 匹配到了 添加过
+      const item = state.cartList.find(item => item.id === action.payload.id);
+      if (item) {
+        item.count++;
+      } else {
+        state.cartList.push(action.payload)
+      }
     }
   }
 })
 
 //异步
-const { setFoodList, changeActiveIndex } = foodsStore.actions
+const { setFoodList, changeActiveIndex, addCart } = foodsStore.actions
 
 const fetchFoodsList = () => {
   return async (dispatch) => {
@@ -30,6 +41,6 @@ const fetchFoodsList = () => {
   }
 }
 
-export { fetchFoodsList, changeActiveIndex }
+export { fetchFoodsList, changeActiveIndex, addCart }
 const reducer = foodsStore.reducer
 export default reducer
