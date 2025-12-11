@@ -1,0 +1,7 @@
+创建路由开发环境
+使用路由我们还是采用CRA创建项目的方式进行基础环境配置
+1.创建项目并安装所有依赖
+npx create-react-app react-router-pronpm i
+2.安装最新的 ReactRouter包npm i react-router-dom
+3.启动项目
+npm run start
