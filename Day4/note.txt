@@ -61,3 +61,56 @@ const Login = () => {
         this is name : {name}
 }
 
+嵌套路由配置：
+实现步骤:
+1.使用children属性配置路由嵌套关系
+    //router:
+        {
+        path: '/',
+        element: <Layout />,
+        children: [
+          {
+            path: 'board',
+            element: <Board />
+          },
+          {
+            path: 'about',
+            element: <About />
+          }
+        ]
+      },
+2.使用'<Outlet/>'组件配置二级路由渲染位置
+//Layout
+    const Layout = () => {
+      return (
+        <div>
+          this is first layout element
+
+          <Link to='/board'>board </Link>
+          <Link to='/about'>about</Link>
+          {/* 配置二级路由出口 */}
+          <Outlet />
+        </div>
+      )
+    }
+
+设置默认路由
+当访问的是一级路由时，默认的二级路由组件可以得到渲染，
+只需要在二级路由的位置去掉path，设置index属性为true
+//router
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+      {
+        // path: 'board',
+        index: true,
+        element: <Board />
+      },
+      {
+        path: 'about',
+        element: <About />
+      }
+    ]
+  },
+  //记得把link的链接改了

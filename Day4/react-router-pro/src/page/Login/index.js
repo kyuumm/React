@@ -9,7 +9,7 @@ const Login = () => {
   return (
 
     <div>
-      this is page login
+      this is page Login
       <Link to='/article'>跳转to article</Link>
       <p>
         this is id : {id}
