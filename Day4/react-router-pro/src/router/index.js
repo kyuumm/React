@@ -1,11 +1,12 @@
 import Login from '../page/Login'
 import Article from '../page/Article'
-import { createBrowserRouter } from 'react-router-dom'
 import Layout from '../page/Layout'
 import Board from '../page/Board'
 import About from '../page/About'
+import NotFound from '../page/NotFound'
+import { createBrowserRouter, createHashRouter } from 'react-router-dom'
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <Layout />,
@@ -32,6 +33,15 @@ const router = createBrowserRouter([
     path: '/article',
     element: <Article />
   },
+
+
+
+
+  {
+    path: '*',
+    element: <NotFound />
+  },
+
 ])
 
 export default router
