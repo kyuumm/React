@@ -258,3 +258,11 @@ JsonServer实现步骤:
             onClose={() => { setDateVisible(false) }}
 3.弹框关闭时箭头朝下，打开是箭头朝上
 		className={classNames('arrow', dateVisible && 'expand')}
+
+
+*****12-18
+账单数据按月分组实现
+流程：
+从Redux中拿到数据
+数据二次处理(useMemo)
+按月分组逻辑实现(lodash)
