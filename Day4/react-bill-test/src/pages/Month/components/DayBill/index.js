@@ -1,6 +1,8 @@
 import classNames from 'classnames'
 import './index.scss'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { billTypeToName } from '@/contents'
+import Icon from '@/components/icon'
 const DailyBill = ({ date, billList = [] }) => {
 
   const dayResult = useMemo(() => {
@@ -18,12 +20,15 @@ const DailyBill = ({ date, billList = [] }) => {
     }
   }, [billList])
 
+  //fold /unfold
+  const [visible, setVisible] = useState(false);
+
   return (
     <div className={classNames('dailyBill')}>
       <div className="header">
         <div className="dateIcon">
           <span className="date">{date}</span>
-          <span className={classNames('arrow')}></span>
+          <span className={classNames('arrow', visible && 'expand')} onClick={() => { setVisible(!visible) }}></span>
         </div>
         <div className="oneLineOverview">
           <div className="pay">
@@ -40,7 +45,25 @@ const DailyBill = ({ date, billList = [] }) => {
           </div>
         </div>
       </div>
-    </div>
+
+      {/* 单日列表 */}
+      <div className="billList" style={{ display: visible ? 'block' : 'none' }}>
+        {billList.map(item => {
+          return (
+            <div className="bill" key={item.id}>
+              {/* icon */}
+              <Icon type={item.useFor} />
+              <div className="detail">
+                <div className="billType">{billTypeToName[item.useFor]}</div>
+              </div>
+              <div className={classNames('money', item.type)}>
+                {item.money.toFixed(2)}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div >
   )
 }
 export default DailyBill

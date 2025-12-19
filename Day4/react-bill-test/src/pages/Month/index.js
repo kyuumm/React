@@ -130,6 +130,9 @@ const Month = () => {
             return <DailyBill key={key} date={key} billList={dayGroup.groupData[key]} />
           })
         }
+
+
+
       </div>
     </div >
   )

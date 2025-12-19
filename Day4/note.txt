@@ -266,3 +266,24 @@ JsonServer实现步骤:
 从Redux中拿到数据
 数据二次处理(useMemo)
 按月分组逻辑实现(lodash)
+
+******12-19
+svg图标显示
+准备静态的组件结构，导出
+在Daybill导入，导入组件，根据props适配，
+const Icon = ({ type }) => {
+  return (
+    <img
+      src={`https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/reactbase/ka/${type}.svg`}
+      alt="icon"
+      style={{
+        width: 20,
+        height: 20,
+      }}
+    />
+  )
+}
+
+export default Icon
+
+使用${ }自动匹配
