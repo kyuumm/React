@@ -1,0 +1,16 @@
+使用CRA初始化项目环境
+1.使用CRA创建项目
+npx create-react-app react-jike
+2.按照业务规范整理项目目录(重点SRC目录)
+规范目录：
+Src
+	apis                 接口
+	assets              静态资源
+	components   通用组件
+	pages              页面级组件
+	router              路由router
+	store                redux状态
+	utils                 工具函数
+	App.js
+	index.js
+	index.scss

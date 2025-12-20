@@ -287,3 +287,9 @@ const Icon = ({ type }) => {
 export default Icon
 
 使用${ }自动匹配
+
+******12-20
+
+组件中收集接口数据：onClick调用收集函数，函数中收集data，
+Redux编写异步代码，导出函数
+组件中提交action，dispatch
