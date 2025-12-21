@@ -14,3 +14,28 @@ Src
 	App.js
 	index.js
 	index.scss
+
+SCSS是什么
+SCSS是一种后缀名为.scss的预编译CSS语言，支持一些原生CSS不支持的高级用法，比如变量使用，嵌套语法等，使用SCSS可以让样式代码更加高效灵活
+安装：
+1.npm install sass -D
+2.测试.scss文件是否可用(嵌套语法)
+
+style.scss -> sass -> style.css
+sass负责编译转化成css，开发阶段使用scss
+
+6-04-Router
+配置基础路由Router
+配置步骤
+1.安装路由包 react-router-dom
+2.准备俩个基础路由组件 Layout 和 Login
+3.在router/index.js文件中引入组件进行路由配置，导出router实例
+4.在入口文件中渲染<RouterProvider/>，传入router实例
+index.js --导入-->RouterProvider---使用--->router配置
+indexjs---导入---》router配置
+
+RouterProvider 的作用：
+这是 react-router-dom 提供的核心组件
+用于在整个应用中启用路由功能
+它接收一个 router 配置对象作为属性
+负责根据 URL 匹配并渲染对应的组件
