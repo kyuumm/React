@@ -55,3 +55,12 @@ DAY6-11-redux管理token
 2.Login组件负责提交action并且把表单数据传递过来
 
 DAY6-14-Token持久化
+未知原因，Redux工具查看state为null，但是token可以正常输出
+
+DAY6-15-封装Token的存取删除
+
+setToken
+getToken
+removeToken
+
+utils/token.js
