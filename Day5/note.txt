@@ -39,3 +39,17 @@ RouterProvider 的作用：
 用于在整个应用中启用路由功能
 它接收一个 router 配置对象作为属性
 负责根据 URL 匹配并渲染对应的组件
+
+
+DAY6-05-@配置别名路径
+如何配置?
+1.针对路径转换，修改webpack别名路径配置craco
+2.针对联想提示，修改VSCode配置jsconfig.json
+
+GAY6-07-antD组件 
+DAY6-08-表单校验
+DAY6-09-onFinish提交表单收集数据
+DAY6-10-axios封装，request封装
+DAY6-11-redux管理token
+1.Redux中编写获取Token的异步获取和同步修改
+2.Login组件负责提交action并且把表单数据传递过来
