@@ -30,4 +30,4 @@ request.interceptors.response.use((response) => {
   return Promise.reject(error)
 })
 
-export { axios }
+export { request }

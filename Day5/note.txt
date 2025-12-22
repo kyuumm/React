@@ -53,3 +53,5 @@ DAY6-10-axios封装，request封装
 DAY6-11-redux管理token
 1.Redux中编写获取Token的异步获取和同步修改
 2.Login组件负责提交action并且把表单数据传递过来
+
+DAY6-14-Token持久化
