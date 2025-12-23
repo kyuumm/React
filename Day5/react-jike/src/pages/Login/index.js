@@ -12,12 +12,17 @@ const Login = () => {
     // console.log('Success:', values);
 
     //触发异步action
-    await dispatch(fetchLogin(values));
-    //异步执行成功了才继续跳转
-    //1跳转首页
-    navigate('/')
-    //2提示准备跳转 
-    message.success('登录成功')
+    try {
+      await dispatch(fetchLogin(values));
+      //异步执行成功了才继续跳转
+      //1跳转首页
+      navigate('/')
+      //2提示准备跳转 
+      message.success('登录成功')
+    } catch (err) {
+      message.error(err.response?.data?.message || err.message || '登录失败')
+      console.error('login failed', err)
+    }
   };
 
   return (

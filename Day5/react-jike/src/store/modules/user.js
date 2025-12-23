@@ -1,14 +1,13 @@
 //用户相关的状态管理
 import { createSlice } from "@reduxjs/toolkit";
 // import { use } from "react";
-import { request } from "@/utils";
-import { setToken as _setToken, getToken as _getToken, removeToken as _removeToken } from "@/utils";
+import { request, setToken as setTokenStorage, getToken as getTokenStorage } from "@/utils";
 
 const userStore = createSlice({
   name: "user",
   //声明数据状态
   initialState: {
-    token: _getToken('token_key') || ''
+    token: getTokenStorage() || ''
   },
   //同步修改方法
   reducers: {
@@ -16,7 +15,7 @@ const userStore = createSlice({
       if (action.payload != null && action.payload !== '') {
         state.token = action.payload;
         // persist token
-        _setToken('token_key', action.payload);
+        setTokenStorage(action.payload);
       }
     }
   }
@@ -35,6 +34,12 @@ const fetchLogin = (loginForm) => {
     const res = await request.post('/authorizations', loginForm);
     const token = res?.data?.data?.token ?? res?.data?.token;
 
+    //2 ??token?Redux store
+    if (token) {
+      dispatch(setToken(token));
+    } else {
+      throw new Error('Login response missing token');
+    }
   }
 }
 

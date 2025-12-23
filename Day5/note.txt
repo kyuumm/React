@@ -64,3 +64,20 @@ getToken
 removeToken
 
 utils/token.js
+
+DAY7-01-axios请求拦截器注入Token
+为什么要做这件事儿?
+Token作为用户的一个标识数据，后端很多接口都会以它作为接口权限判断的依据;请求拦截器注入Token之后，所有用到Axios实例的接口请求都自动携带了Token
+utils/request.js
+|
+axios (token统一注入)
+/ |  \
+获取用户信息接口
+文章发布接口
+获取频道接口
+
+
+方法：
+Axios请求拦截器请求头中注入Token
+调用接口测试Token是否成功携带
+DAY7-02-使用Token做路由权限控制
