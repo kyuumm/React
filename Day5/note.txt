@@ -81,3 +81,57 @@ axios (token统一注入)
 Axios请求拦截器请求头中注入Token
 调用接口测试Token是否成功携带
 DAY7-02-使用Token做路由权限控制
+
+DAY7-02-根据Token控制路由跳转
+1创建组件AuthRoute
+export function AuthRoute({ children }) {
+  const token = getToken();
+  if (token) {
+    return <>{children}</>
+  } else {
+    return <Navigate to={'/login'} replace />
+  }
+}
+2，去Router中配置，包裹原界面
+  {
+    path: "/",
+    element: <AuthRoute><Layout /></AuthRoute>
+  },
+
+
+DAY7-03-Layout样式创建
+样式很奇怪，和浏览器自带的样式冲突了，需要reset
+使用Normalize第三方库
+npm i normalize.css
+
+DAY7-04-Layout二级路由配置
+流程：
+准备三个二级路由 -- router中通过children配置项进行配置 -- Layout组件中配置二级路由出口
+文档和视频不太一样。。？貌似是更新了
+//二级路由
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <AuthRoute><Layout /></AuthRoute>,
+    children: [
+      {
+        path: 'home',
+        element: <Home />
+      },
+      {
+        path: 'article',
+        element: <Article />
+      },
+      {
+        path: 'publish',
+        element: <Publish />
+      },
+    ]
+  },
+  {
+    path: "/login",
+    element: <Login />
+  }
+])
+
+Layout内写二级路由的出口

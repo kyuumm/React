@@ -1,5 +1,10 @@
+html,
 body {
-  div {
-    color: pink;
-  }
+  margin: 0; //移除这两个元素的默认外边距，确保页面没有默认的空白边距
+  height: 100%; //设置高度为父元素的100%，让这两个元素充满整个视口（viewport）
+}
+
+//ID选择器，通常用于React应用中的根容器元素
+#root {
+  height: 100%;
 }
