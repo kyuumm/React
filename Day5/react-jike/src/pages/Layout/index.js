@@ -7,10 +7,16 @@ import {
 } from '@ant-design/icons'
 import './index.scss'
 import { Link, Outlet } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 const { Header, Sider } = Layout
 
 const GeekLayout = () => {
+
+  const location = useLocation()
+  // 这里是当前浏览器上的路径地址
+  const selectedKey = [location.pathname]
+
   return (
     <Layout>
       <Header className="header">
@@ -29,20 +35,21 @@ const GeekLayout = () => {
           <Menu
             mode="inline"
             theme="dark"
-            defaultSelectedKeys={['1']}
+            selectedKeys={selectedKey}
             style={{ height: '100%', borderRight: 0 }}
           >
             <Menu.Item icon={<HomeOutlined />} key="/">
               <Link to='/'>数据概览</Link>
             </Menu.Item>
-            <Menu.Item icon={<DiffOutlined />} key="2">
+            <Menu.Item icon={<DiffOutlined />} key="article">
               <Link to='/article'>内容管理</Link>
             </Menu.Item>
-            <Menu.Item icon={<EditOutlined />} key="3">
+            <Menu.Item icon={<EditOutlined />} key="publish">
               <Link to='/publish'>发布文章</Link>
             </Menu.Item>
           </Menu>
         </Sider>
+
         <Layout className="layout-content" style={{ padding: 20 }}>
           {/* 二级路由的出口 */}
           <Outlet />
