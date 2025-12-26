@@ -7,7 +7,8 @@ const userStore = createSlice({
   name: "user",
   //声明数据状态
   initialState: {
-    token: getTokenStorage() || ''
+    token: getTokenStorage() || '',
+    userInfo: {}
   },
   //同步修改方法
   reducers: {
@@ -17,12 +18,16 @@ const userStore = createSlice({
         // persist token
         setTokenStorage(action.payload);
       }
+    },
+    setUserInfo(state, action) {
+      state.userInfo = action.payload;
     }
+
   }
 })
 
 //解构出action creator
-const { setToken } = userStore.actions
+const { setToken, setUserInfo } = userStore.actions
 
 //获取reducer函数
 const userReducer = userStore.reducer;
@@ -34,15 +39,19 @@ const fetchLogin = (loginForm) => {
     const res = await request.post('/authorizations', loginForm);
     const token = res?.data?.data?.token ?? res?.data?.token;
 
-    //2 ??token?Redux store
-    if (token) {
-      dispatch(setToken(token));
-    } else {
-      throw new Error('Login response missing token');
-    }
+    dispatch(setToken(token));
+  }
+}
+const fetchUserInfo = () => {
+  return async (dispatch) => {
+    //1 send
+    const res = await request.get('/user/profile');
+    const info = res.data.data;
+
+    dispatch(setUserInfo(info));
   }
 }
 
-export { fetchLogin, setToken }
+export { fetchLogin, setToken, setUserInfo, fetchUserInfo }
 
 export default userReducer

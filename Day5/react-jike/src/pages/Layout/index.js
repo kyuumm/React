@@ -8,7 +8,9 @@ import {
 import './index.scss'
 import { Link, Outlet } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
-
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchUserInfo } from '@/store/modules/user'
 const { Header, Sider } = Layout
 
 const GeekLayout = () => {
@@ -17,12 +19,20 @@ const GeekLayout = () => {
   // 这里是当前浏览器上的路径地址
   const selectedKey = [location.pathname]
 
+  //触发用户信息
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchUserInfo());
+  }, [dispatch])
+
+  const name = useSelector(state => state.user.userInfo.name)
+
   return (
     <Layout>
       <Header className="header">
         <div className="logo" />
         <div className="user-info">
-          <span className="user-name">user.name</span>
+          <span className="user-name">{name}</span>
           <span className="user-logout">
             <Popconfirm title="是否确认退出？" okText="退出" cancelText="取消">
               <LogoutOutlined /> 退出
@@ -41,10 +51,10 @@ const GeekLayout = () => {
             <Menu.Item icon={<HomeOutlined />} key="/">
               <Link to='/'>数据概览</Link>
             </Menu.Item>
-            <Menu.Item icon={<DiffOutlined />} key="article">
+            <Menu.Item icon={<DiffOutlined />} key="/article">
               <Link to='/article'>内容管理</Link>
             </Menu.Item>
-            <Menu.Item icon={<EditOutlined />} key="publish">
+            <Menu.Item icon={<EditOutlined />} key="/publish">
               <Link to='/publish'>发布文章</Link>
             </Menu.Item>
           </Menu>
