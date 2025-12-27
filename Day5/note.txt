@@ -138,3 +138,10 @@ Layout内写二级路由的出口
 
 DAY7-07-高亮&用户个人信息显示
 在store内部新建state，set，fetch的相关方法，在layout内触发更新dispatch，useSelector获取信息
+关键问题:用户信息应该放到哪里维护?和Token令牌类似，用户的信息通常很有可能在多个组件中都需要共享使用，所以同样应该放到Redux中维护
+
+使用Redux进行信息管理---Layout组件中提交action---Layout组件中完成渲染 
+
+DAY7-08-退出登录
+确认退出登录 ---写redux函数改变state --回调函数中调用函数，导航到登录页
+
