@@ -145,3 +145,77 @@ DAY7-07-高亮&用户个人信息显示
 DAY7-08-退出登录
 确认退出登录 ---写redux函数改变state --回调函数中调用函数，导航到登录页
 
+DAY7-09-token失效
+token失效后请求接口，后端会返回401状态码，
+axios拦截监控401状态码，清除失效token，跳转登录
+
+DAY7-10-Echarts
+从官网导入，使用useEffect
+DOM 渲染时机：
+React 组件的渲染分为两个阶段：render 阶段和 commit 阶段
+return 语句中的 JSX 是在 render 阶段执行的
+useEffect 中的代码是在 commit 阶段之后执行的，此时 DOM 已经更新到页面上
+使用useEffect，内部写echart的渲染
+
+
+DAY7-11-Echarts组件封装
+JSX语法注意！return多行语句需要( )括住
+√ return <div><BarChart /></div>
+√ return (
+  <div>
+    <BarChart />
+  </div>
+)
+√ return <div>
+    <BarChart />
+  </div>
+//////
+× return 
+<div>
+  <BarChart />
+</div>
+
+CharRef是什么
+charRef 是通过 useRef 创建的一个 React ref 对象
+它用于直接访问 DOM 元素，是 React 推荐的方式
+ref 对象在组件的整个生命周期内保持不变
+
+const charRef = useRef(null);
+// 在 JSX 中绑定
+return <div ref={charRef} />;
+// 在 useEffect 中访问
+const chartDom = charRef.current;
+
+DAY7-12-api模块封装
+接口请求放到了功能实现的位置，没有再固定的模块内维护，后期查找维护困难
+把项目中的所有接口以函数的形式封装到apis模块中
+
+原来：const fetchLogin = (loginForm) => {
+  return async (dispatch) => {
+    //1 send
+    const res = await request.post('/authorizations', loginForm);//**********
+    const token = res?.data?.data?.token ?? res?.data?.token;
+
+    dispatch(setToken(token));
+  }
+}
+
+现在：
+const fetchLogin = (loginForm) => {
+  return async (dispatch) => {
+    //1 send
+    const res = await loginAPI(loginForm); //************
+    const token = res?.data?.data?.token ?? res?.data?.token;
+
+    dispatch(setToken(token));
+  }
+}
+//apis/user.js
+
+export function loginAPI(formData) {
+  return request({
+    url: '/authorizations',
+    method: "POST",
+    data: formData
+  })
+}
