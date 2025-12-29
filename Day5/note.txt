@@ -219,3 +219,6 @@ export function loginAPI(formData) {
     data: formData
   })
 }
+
+DAY8-02-导入富文本编辑器
+npm i react-quill --legacy-peer-deps依赖有问题加上后面那句
