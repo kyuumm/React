@@ -222,3 +222,12 @@ export function loginAPI(formData) {
 
 DAY8-02-导入富文本编辑器
 npm i react-quill --legacy-peer-deps依赖有问题加上后面那句
+
+DAY8-03-和富文本编辑器冲突，回退react版本
+*packagejson修改版本后，执行npm  install
+*发现出现两个富文本编辑器，原因：严格模式会渲染两次组件，删<React.StrictMode>
+
+**为什么使用useEffect
+组件生命周期：useEffect 可以在组件挂载时执行一些初始化操作，类似于类组件中的 componentDidMount。通过将数据获取放在 useEffect 中，可以确保在组件首次渲染到 DOM 后才进行数据获取，而不是在渲染过程中进行。
+为什么不能直接调用 函数getChannelAPI： 
+避免阻塞渲染：如果直接在组件函数中调用 getChannelAPI，并且该函数是异步的，可能会导致渲染过程被阻塞，影响用户体验。

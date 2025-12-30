@@ -9,11 +9,8 @@ import store from './store';
 import 'normalize.css'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    {/* <App /> */}
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
-  </React.StrictMode>
-);
-console.log(store.getState())
+  // {/* <App /> */ }
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
+)
