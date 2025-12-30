@@ -27,7 +27,8 @@ const Publish = () => {
     //1.封装函数 在函数体内调用接口
     const getChannelLists = async () => {
       const res = await getChannelAPI();
-      setChannelsLists(res.data.channels)
+      setChannelsLists(res.data.data.channels)
+
     }
     //2.调用函数
     getChannelLists();
@@ -61,7 +62,7 @@ const Publish = () => {
             rules={[{ required: true, message: '请选择文章频道' }]}
           >
             <Select placeholder="请选择文章频道" style={{ width: 400 }}>
-              {channelsLists.map(item => <Option value={0}>{item.name}</Option>)}
+              {channelsLists.map(item => <Option value={item.id}>{item.name}</Option>)}
             </Select>
           </Form.Item>
           <Form.Item
