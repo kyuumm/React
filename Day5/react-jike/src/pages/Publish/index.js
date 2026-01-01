@@ -23,6 +23,7 @@ const { Option } = Select
 const Publish = () => {
   //获取频道列表
   const [channelsLists, setChannelsLists] = useState([])
+  const [imageList, setImageList] = useState([]);
 
   useEffect(() => {
     //1.封装函数 在函数体内调用接口
@@ -51,6 +52,17 @@ const Publish = () => {
     createArticleAPI(reqData)
   }
 
+  const onChange = (info) => {
+    setImageList(info.fileList);
+  }
+  //切换图片类型
+  const [imageType, setImageType] = useState(0)
+  const onImageTypeChange = (e) => {
+    setImageType(e.target.value)
+  }
+
+
+
   return (
     <div className="publish">
       <Card //结构美化
@@ -65,7 +77,7 @@ const Publish = () => {
         <Form
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
-          initialValues={{ type: 1 }}
+          initialValues={{ imageType: 0 }}
           onFinish={onFinish}
         >
           <Form.Item
@@ -84,6 +96,33 @@ const Publish = () => {
               {channelsLists.map(item => <Option value={item.id}>{item.name}</Option>)}
             </Select>
           </Form.Item>
+          <Form.Item label="封面">
+            <Form.Item>
+              <Radio.Group value={imageType} onChange={onImageTypeChange}>
+                <Radio value={1}>单图</Radio>
+                <Radio value={3}>三图</Radio>
+                <Radio value={0}>无图</Radio>
+              </Radio.Group>
+              {/* list type 决定选择文件框的外观 */}
+              {/* showUploadList 控制显示上传列表 */}
+              {imageType > 0 &&
+                <Upload
+                  listType="picture-card"
+                  showUploadList
+                  action={'http://geek.itheima.net/v1_0/upload'}
+                  onChange={onChange}
+                  name='image'
+                  maxCount={imageType}
+                >
+                  <div style={{ marginTop: 8 }}>
+                    <PlusOutlined />
+                  </div>
+                </Upload>
+              }
+            </Form.Item>
+          </Form.Item>
+
+
           <Form.Item
             label="内容"
             name="content"

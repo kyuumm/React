@@ -231,3 +231,13 @@ DAY8-03-和富文本编辑器冲突，回退react版本
 组件生命周期：useEffect 可以在组件挂载时执行一些初始化操作，类似于类组件中的 componentDidMount。通过将数据获取放在 useEffect 中，可以确保在组件首次渲染到 DOM 后才进行数据获取，而不是在渲染过程中进行。
 为什么不能直接调用 函数getChannelAPI： 
 避免阻塞渲染：如果直接在组件函数中调用 getChannelAPI，并且该函数是异步的，可能会导致渲染过程被阻塞，影响用户体验。
+
+DAY8-06-图片上传
+在Upload组件中写
+                listType="picture-card"
+                showUploadList
+                action={'http://geek.itheima.net/v1_0/upload'}这里配置上传的接口地址
+                onChange={onChange}   //上传图片中不断执行
+                name='image'   //按后端的接口文档，需要一个字段
+
+声明State，写onChange回调函数
