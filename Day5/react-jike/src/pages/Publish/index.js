@@ -7,7 +7,8 @@ import {
   Input,
   Upload,
   Space,
-  Select
+  Select,
+  message
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
@@ -37,19 +38,25 @@ const Publish = () => {
   }, [])
 
   const onFinish = (values) => {
+    //校验图片类型
+    if (imageList.length !== imageType) { return message.warning('封面类型和图片数量不匹配') }
+
     const { title, content, channel_id } = values
     //按接口文档格式处理表单数据
     const reqData = {
       title: title,
       content: content,
       cover: {
-        type: 0,
-        images: []
+        type: imageType,//图片类型
+        images: imageList.map(item => item.response.data.url)//图片列表
       },
       channel_id: channel_id,
     }
 
     createArticleAPI(reqData)
+
+    message.success('发布成功')
+
   }
 
   const onChange = (info) => {
