@@ -18,24 +18,13 @@ import 'react-quill/dist/quill.snow.css'
 import { useState, useEffect } from 'react'
 import { getChannelAPI, createArticleAPI } from '@/apis/article'
 import { type } from '@testing-library/user-event/dist/type'
+import { useChannel } from '@/hooks/useChannel'
 
 const { Option } = Select
 
 const Publish = () => {
-  //获取频道列表
-  const [channelsLists, setChannelsLists] = useState([])
   const [imageList, setImageList] = useState([]);
-
-  useEffect(() => {
-    //1.封装函数 在函数体内调用接口
-    const getChannelLists = async () => {
-      const res = await getChannelAPI();
-      setChannelsLists(res.data.data.channels)
-
-    }
-    //2.调用函数
-    getChannelLists();
-  }, [])
+  const { channelLists } = useChannel()
 
   const onFinish = (values) => {
     //校验图片类型
@@ -100,7 +89,7 @@ const Publish = () => {
             rules={[{ required: true, message: '请选择文章频道' }]}
           >
             <Select placeholder="请选择文章频道" style={{ width: 400 }}>
-              {channelsLists.map(item => <Option value={item.id}>{item.name}</Option>)}
+              {channelLists.map(item => <Option value={item.id}>{item.name}</Option>)}
             </Select>
           </Form.Item>
           <Form.Item label="封面">
