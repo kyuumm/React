@@ -19,3 +19,19 @@ export function createArticleAPI(data) {
     data: data,
   })
 }
+
+//获取文章列表
+export function getArticleListAPI(params) {
+  return request({
+    url: 'mp/articles',
+    method: "GET",
+    params
+  })
+}
+
+export function delArticleAPI(id) {
+  return request({
+    url: `mp/articles/${id}`,
+    method: "DELETE",
+  })
+}

@@ -19,12 +19,14 @@ import { useState, useEffect } from 'react'
 import { getChannelAPI, createArticleAPI } from '@/apis/article'
 import { type } from '@testing-library/user-event/dist/type'
 import { useChannel } from '@/hooks/useChannel'
+import { useNavigate } from 'react-router-dom'
 
 const { Option } = Select
 
 const Publish = () => {
   const [imageList, setImageList] = useState([]);
   const { channelLists } = useChannel()
+  const navigate = useNavigate()
 
   const onFinish = (values) => {
     //校验图片类型
@@ -45,7 +47,9 @@ const Publish = () => {
     createArticleAPI(reqData)
 
     message.success('发布成功')
-
+    setTimeout(() =>
+      navigate('/article'), 2000
+    )
   }
 
   const onChange = (info) => {

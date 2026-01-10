@@ -247,3 +247,84 @@ DAY8-09-发布文章
 没有解决：发布后清空表单，跳转主页
 
 DAY8-11-自定义hook渲染列表
+
+DAY9-1-筛选文章
+
+筛选功能的本质:给请求列表接口传递不同的参数和后端要不同的数据实现步骤:
+1.准备完整的请求参数对象
+2.获取用户选择的表单数据
+3.把表单数据放置到接口对应的字段中
+4.重新调用文章列表接口渲染Table列表
+
+DAY9-2-文章分页
+实现效果:点击页数，在Table中显示当前页的数据列表
+如何实现:
+1.实现分页展示(页数=总数/每页条数)
+2.点击分页拿到当前点击的页数
+3.使用页数作为请求参数重新获取文章列表渲染
+
+      <Card title={`根据筛选条件共查询到 ${count} 条结果：`}>
+        <Table rowKey="id" columns={columns} dataSource={list} pagination={{
+          total: count,//总数
+          pageSize: reqData.per_page, //每条的页数
+          onChange: onPageChange,
+        }} />
+      </Card>
+
+点击后重新渲染
+  const onPageChange = (page) => {
+    // console.log(page);
+    setReqData({
+      ...reqData,
+      page: page
+    })
+  }
+
+DAY9-03-文章删除
+1.点击删除弹出确认框                
+           <Popconfirm
+              title="删除文章"
+              description="确认删除文章"
+              onConfirm={onConfirm}
+              okText="是的"
+              cancelText="否"
+            >
+              <Button
+                type="primary"
+                danger
+                shape="circle"
+                icon={<DeleteOutlined />}
+              />
+            </Popconfirm>
+2.得到文章id，使用id调用删除接口
+    {
+      title: '操作',
+      render: data => {         //data这里有id
+        return (
+          <Space size="middle">
+            <Button type="primary" shape="circle" icon={<EditOutlined />} />
+            <Popconfirm
+              title="删除文章"
+              description="确认删除文章"
+              onConfirm={() => onConfirm(data)}      //传给回调函数
+              okText="是的"
+              cancelText="否"
+            >·········
+3.更新文章列表
+回调函数内
+  const onConfirm = async (data) => {
+    console.log(data);
+    await delArticleAPI(data.id);        
+                                          //不加async await：异步操作，不等待del操作完成继续下一步，列表还没来得及变
+    //刷新列表
+    setReqData({
+      ...reqData,
+    })
+
+  }
+
+
+DAY9-04-编辑跳转
+按钮回调函数navigate，携带id跳转网址
+            <Button type="primary" shape="circle" icon={<EditOutlined />} onClick={() => navigate(`/publish?id=${data.id}`)} />
+ 
