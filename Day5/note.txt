@@ -328,3 +328,42 @@ DAY9-04-编辑跳转
 按钮回调函数navigate，携带id跳转网址
             <Button type="primary" shape="circle" icon={<EditOutlined />} onClick={() => navigate(`/publish?id=${data.id}`)} />
  
+DAY9-05-数据回显
+  //回填数据
+  const [searchParams] = useSearchParams()
+  const articleId = searchParams.get('id')
+            //searchParams.get('id')用于获取URL中名为"id"的查询参数值。例如，如果URL是/publish?id=123，那么articleId的值就是"123"。
+  useEffect(() => {
+    //1 id获取数据
+
+    //2 实例方法
+  })
+
+//
+
+  //获取文章详情
+  const [form] = Form.useForm(); //获取Form数据，绑定在form变量上
+
+  useEffect(() => {
+    //1 id获取数据
+    async function getArticleDetail() {
+      const res = await getArticleById(articleId)
+      console.log(res.data.data);
+
+      form.setFieldsValue(res.data.data)
+
+    }
+    getArticleDetail()
+    //2 实例方法
+
+
+  }, [articleId, form])
+
+********
+        <Form
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 16 }}
+          initialValues={{ imageType: 0 }}
+          onFinish={onFinish}
+          form={form}      //绑定变量和Form表单
+        >

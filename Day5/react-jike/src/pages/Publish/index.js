@@ -11,12 +11,12 @@ import {
   message
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import './index.scss'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import { useState, useEffect } from 'react'
-import { getChannelAPI, createArticleAPI } from '@/apis/article'
+import { useState, useEffect, use } from 'react'
+import { getChannelAPI, createArticleAPI, getArticleById } from '@/apis/article'
 import { type } from '@testing-library/user-event/dist/type'
 import { useChannel } from '@/hooks/useChannel'
 import { useNavigate } from 'react-router-dom'
@@ -61,7 +61,27 @@ const Publish = () => {
     setImageType(e.target.value)
   }
 
+  //回填数据
+  const [searchParams] = useSearchParams()
+  const articleId = searchParams.get('id')
+  console.log(articleId);
 
+  //获取文章详情
+  const [form] = Form.useForm();
+  useEffect(() => {
+    //1 id获取数据
+    async function getArticleDetail() {
+      const res = await getArticleById(articleId)
+      console.log(res.data.data);
+
+      form.setFieldsValue(res.data.data)
+
+    }
+    getArticleDetail()
+    //2 实例方法
+
+
+  }, [articleId, form])
 
   return (
     <div className="publish">
@@ -79,6 +99,7 @@ const Publish = () => {
           wrapperCol={{ span: 16 }}
           initialValues={{ imageType: 0 }}
           onFinish={onFinish}
+          form={form}
         >
           <Form.Item
             label="标题"
