@@ -16,7 +16,7 @@ import './index.scss'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { useState, useEffect, use } from 'react'
-import { getChannelAPI, createArticleAPI, getArticleById } from '@/apis/article'
+import { getChannelAPI, createArticleAPI, getArticleById, updateArticleAPI } from '@/apis/article'
 import { type } from '@testing-library/user-event/dist/type'
 import { useChannel } from '@/hooks/useChannel'
 import { useNavigate } from 'react-router-dom'
@@ -39,14 +39,25 @@ const Publish = () => {
       content: content,
       cover: {
         type: imageType,//图片类型
-        images: imageList.map(item => item.response.data.url)//图片列表
+        //url处理逻辑只使用于新增，编辑不适用
+        images: imageList.map(item => {
+          if (item.response) { return item.response.data.url; }
+          else { return item.url; }
+        })//图片列表
       },
       channel_id: channel_id,
     }
 
-    createArticleAPI(reqData)
+    //调用不同接口
+    if (articleId) {
+      //更新接口
+      updateArticleAPI({ ...reqData, id: articleId })
+    } else {
+      //新增接口
+      createArticleAPI(reqData)
+    }
 
-    message.success('发布成功')
+    message.success(articleId ? '修改成功' : '发布成功')
     setTimeout(() =>
       navigate('/article'), 2000
     )
@@ -67,17 +78,34 @@ const Publish = () => {
   console.log(articleId);
 
   //获取文章详情
-  const [form] = Form.useForm();
+  const [form] = Form.useForm(); //获取Form数据，绑定在form变量上
+
+
   useEffect(() => {
     //1 id获取数据
     async function getArticleDetail() {
       const res = await getArticleById(articleId)
-      console.log(res.data.data);
+      const data = res.data.data;
+      console.log(data);
 
-      form.setFieldsValue(res.data.data)
+      form.setFieldsValue({
+        ...data,
+        type: data.cover.type,
+      })
+      // 为什么现在的写法无法回填封面?
+      //数据结构的问题 set方法 -> { type:3} { cover:{ type:3}}
+      // 回填图片列表
+      setImageType(data.cover.type)
+      //显示图片。类型：{url:url}
+      setImageList(data.cover.images.map(url => {
+        return { url }
+      }))
 
     }
-    getArticleDetail()
+    //只有id时候才能调用
+    if (articleId) {
+      getArticleDetail()
+    }
     //2 实例方法
 
 
@@ -89,7 +117,7 @@ const Publish = () => {
         title={  //面包屑导航
           <Breadcrumb items={[
             { title: <Link to={'/'}>首页</Link> },
-            { title: '发布文章' },
+            { title: `${articleId ? '编辑文章' : '发布文章'}` }
           ]}
           />
         }
@@ -117,7 +145,7 @@ const Publish = () => {
               {channelLists.map(item => <Option value={item.id}>{item.name}</Option>)}
             </Select>
           </Form.Item>
-          <Form.Item label="封面">
+          <Form.Item label="封面" name="type">
             <Form.Item>
               <Radio.Group value={imageType} onChange={onImageTypeChange}>
                 <Radio value={1}>单图</Radio>
@@ -134,6 +162,7 @@ const Publish = () => {
                   onChange={onChange}
                   name='image'
                   maxCount={imageType}
+                  fileList={imageList}
                 >
                   <div style={{ marginTop: 8 }}>
                     <PlusOutlined />

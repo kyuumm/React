@@ -333,13 +333,6 @@ DAY9-05-数据回显
   const [searchParams] = useSearchParams()
   const articleId = searchParams.get('id')
             //searchParams.get('id')用于获取URL中名为"id"的查询参数值。例如，如果URL是/publish?id=123，那么articleId的值就是"123"。
-  useEffect(() => {
-    //1 id获取数据
-
-    //2 实例方法
-  })
-
-//
 
   //获取文章详情
   const [form] = Form.useForm(); //获取Form数据，绑定在form变量上
@@ -367,3 +360,211 @@ DAY9-05-数据回显
           onFinish={onFinish}
           form={form}      //绑定变量和Form表单
         >
+
+
+DAY9-06-图片回填
+实现效果:回填封面的类型以及上传过的封面图片
+如何实现:
+1.使用cover中的type字段回填封面类型
+  useEffect(() => {
+    //1 id获取数据
+    async function getArticleDetail() {
+      const res = await getArticleById(articleId)
+      console.log(res.data.data);
+
+      form.setFieldsValue({
+        ...res.data.data,
+        type: res.data.data.cover.type,
+      })
+      // 为什么现在的写法无法回填封面?
+      //数据结构的问题 set方法 -> { type:3} { cover:{ type:3}}
+      // 回填图片列表
+      setImageType(res.data.data.cover.type)
+      setImageList(res.data.data.cover.images.map(url => {
+        return { url }
+      }))
+
+    }
+2.使用cover中的images字段回填封面图片
+
+注意，图片框中需要加上fileList
+                <Upload
+                  listType="picture-card"
+                  showUploadList
+                  action={'http://geek.itheima.net/v1_0/upload'}
+                  onChange={onChange}
+                  name='image'
+                  maxCount={imageType}
+                  fileList={imageList}        // ***
+                >
+
+DAY9-07-发布文章页面修改
+
+  useEffect(() => {
+    //1 id获取数据
+···················
+    }
+    //只有id时候才能调用
+    if (articleId) {
+      getArticleDetail()
+    }
+  }, [articleId, form])
+//////////////////////-----------------------
+      <Card //结构美化
+        title={  //面包屑导航
+          <Breadcrumb items={[
+            { title: <Link to={'/'}>首页</Link> },
+            { title: `${articleId ? '编辑文章' : '发布文章'}` }  //导航栏显示
+          ]}
+          />
+        }
+      >
+
+DAY9-08-编辑后更新文章
+
+更新文章和新增文章相比，大部分的逻辑都是一致的，稍作参数适配调用不同接口即可
+1.适配url参数
+    const reqData = {
+      title: title,
+      content: content,
+      cover: {
+        type: imageType,//图片类型
+        //url处理逻辑只使用于新增，编辑不适用
+        images: imageList.map(item => {
+          if (item.response) { return item.response.data.url; }
+          else { return item.url; }
+        })//图片列表
+      },
+2.调用文章更新接口
+
+新增更新文章接口：
+
+//提交文章表单
+export function createArticleAPI(data) {
+  return request({
+    url: 'mp/articles',
+    method: "POST",
+    data: data,
+  })
+}
+//更新文章表单
+export function updateArticleAPI(data) {
+  return request({
+    url: `mp/articles/${data.id}`,
+    method: "PUT",
+    data: data,
+  })}
+
+//-------------------
+    //调用不同接口
+    if (articleId) {
+      //更新接口
+      updateArticleAPI({ ...reqData, id: articleId })
+    } else {
+      //新增接口
+      createArticleAPI(reqData)
+    }
+ 
+DAY9-09-项目打包
+
+项目打包和本地预览
+1.项目打包
+打包指的是将项目中的源代码和资源文件进行处理，生成可在生产环境中运行的静态文件的过程打包命令:npmrun build
+2.本地预览(模拟服务器运行项目)
+
+本地预览是指在本地通过静态服务器模拟生产服务器运行项目的过程
+
+1.安装本地服务包npmi-gserve
+2.serve -s./build
+3.浏览器中访问http://localhost:3000/
+
+DAY9-10-打包优化-路由懒加载
+
+什么是路由懒加载?路由懒加载是指路由的JS资源只有在被访问时才会动态获取，目的是为了优化项目首次打开的时间
+首页
+文章管理
+ 创建文章
+优化前
+home.js  article.js  publish.js （全部同时加载）
+优化后
+home.js  （只加载访问的网站）
+
+如何进行配置?
+
+1.把路由修改为由React提供的lazy函数进行动态导入
+
+在router内
+//路由配置
+import Layout from "@/pages/Layout";// src/pages/layout
+import Login from "@/pages/Login";
+import { createBrowserRouter } from "react-router-dom";
+import { AuthRoute } from "@/components/AuthRoute";
+// import Home from '@/pages/Home'
+// import Article from '@/pages/Article'
+// import Publish from '@/pages/Publish'
+
+import { lazy } from "react";
+//lazy导入组件
+const Home = lazy(() => import('@/pages/Home'))
+const Article = lazy(() => import('@/pages/Article'))
+const Publish = lazy(() => import('@/pages/Publish'))
+
+2.使用React内置的Suspense组件包裹路由中element选项对应的组件
+
+//配置路由实例
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <AuthRoute><Layout /></AuthRoute>,
+    children: [
+      {
+        index: 'true',
+        element: <Home />
+      },
+      {
+        path: 'home',
+        element: <Suspense fallback={'loading...'}><Home /></Suspense>
+      },
+      {
+        path: 'article',
+        element: <Suspense fallback={'loading...'}><Article /></Suspense>
+      },
+      {
+        path: 'publish',
+        element: <Suspense fallback={'loading...'}><Publish /></Suspense>
+      },
+
+fallback：加载页面时显示的东西
+
+DAY9-11-打包优化，包体积分析
+打包优化-包体积分析
+什么包体积分析?
+通过可视化的方式，直观的体现项目中各种包打包之后的体积大小，方便做优化
+
+使用 source-map-explorer
+1.安装包2.配置命令指定要分析的js文件
+1   npm i source-map-explore
+2     "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject",
+    "analyze":"source-map-explorer 'build/static/js/*.js'"
+  },   //在配置文件中指定需要分析的包的名字（即：build/static/js/所有的js文件）
+npm run analyze
+npx source-map-explorer build/static/js/*.js 打开包
+失败了*  Your source map refers to generated column Infinity on line 2, but the source only contains 833424 column(s) on that line.
+  Check that you are using the correct source map.
+
+DAY9-12-打包优化-CDN优化
+
+什么是CDN?
+CDN是一种内容分发网络服务，当用户请求网站内容时，由离用户最近的服务器将缓存的资源内容传递给用户
+
+哪些资源可以放到CDN服务器?
+体积较大的非业务jS文件，比如react、react-dom
+1.体积较大，需要利用CDN文件在浏览器的缓存特性，加快加载时间2.非业务jS文件，不需要经常做变动，CDN不用频繁更新缓存
+
+项目中怎么做?
+1.把需要做CDN缓存的文件排除在打包之外(react、react-dom)
+2.以CDN的方式重新引入资源(react、react-dom)
