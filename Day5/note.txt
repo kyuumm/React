@@ -568,3 +568,7 @@ CDN是一种内容分发网络服务，当用户请求网站内容时，由离�
 项目中怎么做?
 1.把需要做CDN缓存的文件排除在打包之外(react、react-dom)
 2.以CDN的方式重新引入资源(react、react-dom)
+
+复制语雀内容，修改：
+1增加多个cdn备用
+2.        match.options.cdn = cdn

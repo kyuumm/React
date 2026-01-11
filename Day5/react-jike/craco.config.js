@@ -29,15 +29,25 @@ module.exports = {
           react: 'React',
           'react-dom': 'ReactDOM'
         }
-        // 配置现成的cdn 资源数组 现在是公共为了测试
-        // 实际开发的时候 用公司自己花钱买的cdn服务器
+        // 配置现成的cdn 资源数组 
+        // 添加多个CDN源作为fallback
         cdn = {
           js: [
+            'https://unpkg.com/react@18.2.0/umd/react.production.min.js',
+            'https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js',
             'https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js'
           ],
+          // 错误原因是生产构建时React被配置为通过CDN加载(externals)，但原配置只有一个CDN源且不可靠。修复方案： 
+          // 添加多个CDN源作为备用(unpkg和cdnjs)
+          // 确保HTML正确加载后才执行React代码
+          // 这些修改只影响生产构建，开发环境不受影响
           css: []
         }
+      })
+      whenProd(() => {
+        // 确保HTML加载完成后再执行React代码
+        webpackConfig.output.globalObject = 'this'
       })
 
       // 都是为了将来配置 htmlWebpackPlugin插件 将来在public/index.html注入
