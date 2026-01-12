@@ -1,0 +1,73 @@
+DAY10-01-useReducer
+//1.定义reducer函数 根据不同的action返回不同的状态
+function reducer(state, action) {
+  switch (action.type) {
+    case 'INC':
+      return state + 1
+    case 'DEC':
+      return state - 1;
+    default:
+      return state;
+  }
+}
+
+function App() {
+  // 2.组件中调用useReducer(reducer，0) => [state,dispatch]
+  const [state, dispatch] = useReducer(reducer, 0)
+  return (
+    // 3.调用dispatch({type:'INC'}) =>通知reducer产生一个新的状态 使用这个新状态更新UI
+    <div className="App">
+      <button onClick={() => dispatch({ type: "DEC" })}>-</button>
+      {state}
+      <button onClick={() => dispatch({ type: "INC" })}>+</button>
+    </div>
+  );
+}
+
+传参的写法：
+    case 'SET':
+      return action.payload;
+
+
+      <button onClick={() => dispatch({ type: "SET", payload: 100 })}>100</button>
+设置payload即可
+
+DAY10-02-useMemo
+
+useMemo
+作用:在组件每次重新渲染的时候缓存计算的结果
+
+和useEffect？，
+useMemo：在渲染中同步执行
+useEffect：渲染之后异步执行，无论 useEffect 里的逻辑多耗时，都不会阻塞页面渲染，用户体验更好
+
+useMemo -基础语法
+useMemo(() => {
+//根据count1返回计算的结果
+},[count1])3
+
+说明:使用useMemo做缓存之后可以保证只有count1依赖项发生变化时才会重新计算
+
+eg：
+组件中有count1，count2变量，调用fib(count1)函数，输出结果，当count2变化时，无论count2是否有变化，fib(count1)都会重新计算输出，浪费性能
+
+前：
+function fib(n) {
+···}
+
+function App() {
+ 
+  const [count1, setCount1] = useState(0);
+
+ const result = fib(count1)
+
+  const [count2, setCount2] = useState(0);
+  console.log('rendered again');
+
+  return (···）
+
+改后核心：
+
+  const result = useMemo(() => {
+    return fib(count1)
+  }, [count1])
