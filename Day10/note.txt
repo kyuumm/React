@@ -71,3 +71,139 @@ function App() {
   const result = useMemo(() => {
     return fib(count1)
   }, [count1])
+
+DAY10-03-React memo
+
+作用:允许组件在Props没有改变的情况下跳过渲染
+React组件默认的渲染机制:只要父组件重新渲染子组件就会重新渲染
+如果Son组件本身并不需要做渲染更新，存在浪费
+
+语法：
+const MemoComponent = memo(function SomeComponent (props) {
+})
+说明:经过memo函数包裹生成的缓存组件只有在props发生变化的时候才会重新渲染
+
+eg：
+
+function Child() {
+  console.log("Child Rendered");
+
+  return <div>Child</div>
+}
+function App() {
+  const [count, setCount] = useState(0);
+  return (
+    <div className="App">
+      <button onClick={() => { setCount(count + 1) }}>count:{count}</button>
+      <Child />
+//点击按钮，子组件也渲染
+    </div>
+  );
+}
+
+改后：
+
+//子组件使用memo
+const MemoChild = memo(
+  function Child() {
+    console.log("Child Rendered");
+
+    return <div>Child</div>
+  }
+)
+/* function Child() {
+  console.log("Child Rendered");
+
+  return <div>Child</div>
+} */
+function App() {
+  const [count, setCount] = useState(0);
+  return (
+    <div className="App">
+      <button onClick={() => { setCount(count + 1) }}>count:{count}</button>
+      <MemoChild /> //更换组件
+
+DAY10-04-memo props比较
+
+React.memo -props的比较机制
+机制:在使用memo缓存组件之后，React会对每一个 prop使用Object.is比较新值和老值，返回true，表示没有变化
+prop是简单类型
+Object.is(3,3)=>true没有变化
+prop是引用类型(对象/数组)
+Object([],[])=>false 有变化,React只关心引用是否变化（每次生成新值，不一样）
+
+简单数据类型eg：
+const MemoChild = memo(
+  function Child({ count }) {
+    console.log("Child Rendered");
+
+    return <div>Child {count}</div>
+  }
+)
+/* function Child() {
+  console.log("Child Rendered");
+
+  return <div>Child</div>
+} */
+function App() {
+  const [count, setCount] = useState(0);
+  return (
+    <div className="App">
+      <button onClick={() => { setCount(count + 1) }}>count</button>
+      <MemoChild count={count} />
+    </div>
+  );
+}//点击按钮，重新渲染
+
+改后：
+function App() {
+  const [count, setCount] = useState(0);
+  return (
+    <div className="App">
+      <button onClick={() => { setCount(count + 1) }}>count</button>
+      <MemoChild count={100} />
+    </div>
+  );
+}
+//点击按钮，不变
+
+引用数据类型eg：
+
+const MemoChild = memo(
+  function Child({ list }) {
+    console.log("Child Rendered");
+
+    return <div>Child {list}</div>
+  }
+)
+/* function Child() {
+  console.log("Child Rendered");
+
+  return <div>Child</div>
+} */
+function App() {
+  const list = [1, 2, 3, 4, 5]
+  const [count, setCount] = useState(0);
+  return (
+    <div className="App">
+      <button onClick={() => { setCount(count + 1) }}>count</button>
+      <MemoChild list={list} />
+    </div>
+  );
+}
+
+点击按钮引发亲组件重新渲染，list会重新生成，两次list引用不一致，重新渲染
+
+解决：
+//3.保证引用稳定 ->useMemo 组件渲染的过程中缓存一个值
+改后：
+function App() {
+  const list = useMemo(() => [1, 2, 3, 4, 5], []); //useMemo缓存list的值
+  const [count, setCount] = useState(0);
+  return (
+    <div className="App">
+      <button onClick={() => { setCount(count + 1) }}>count</button>
+      <MemoChild list={list} />
+    </div>
+  );
+}
