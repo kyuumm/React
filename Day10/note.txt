@@ -207,3 +207,50 @@ function App() {
     </div>
   );
 }
+
+DAY10-05-useCallback
+
+useCallback
+作用:在组件多次重新渲染的时候缓存函数
+类似useMemo，对函数的引用进行缓存
+
+const changeHandler = (value) => console.log(value)
+改后：
+const changeHandler=useCallback((value)=>console.log(value),[ ] )
+
+DAY10-06-forwardRef
+
+通过ref获取到子组件内部的input元素让其聚焦亲组件
+
+const Input = forwardRef((props, ref) => {return <input type="text"ref={ref} />
+})
+//父组件
+function App () {
+const inputRef = useRef(null)
+return (<>
+<Input ref={inputRef} />
+<>
+)
+
+没懂有什么用
+
+DAY10-07-useInperativeHandle
+uselnperativeHandlle -场景说明
+父组件 通过ref调用子组件内部的focus方法实现聚焦
+子组件
+focus
+<input/>
+
+*****uselnperativeHandlle -场景说明
+//子组件
+const Input = forwardRef((props,ref)=>{
+	const inputRef = useRef(null)
+//实现聚焦逻辑函数
+	const focusHandler = ()=>{inputRef.current.focus()}
+// 暴露函数给父组件调用
+	useImperativeHandle(ref,() => {
+		return {focusHandler}
+	})
+	return <input type="text"ref={inputRef} />
+})
+
