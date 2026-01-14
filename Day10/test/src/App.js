@@ -1,31 +1,29 @@
-//useReducer
-
-import { useReducer, useState, useMemo, memo } from "react";
-//1.传递一个简单类型的propprop变化时组件重新渲染
-//2.传递一个引用类型的prop,比较的是新值和旧值的引用是否相等
-//3.保证引用稳定 ->useMemo 组件渲染的过程中缓存一个值
-
-const MemoChild = memo(
-  function Child({ list }) {
-    console.log("Child Rendered");
-
-    return <div>Child {list}</div>
+import { Component } from 'react';
+class Counter extends Component {
+  // 编写组件的逻辑代码
+  // 1.状态变量 
+  state = {
+    count: 0
   }
-)
-/* function Child() {
-  console.log("Child Rendered");
+  // 2.事件回调
+  setCount = (count) => {
+    this.setState({
+      count: this.state.count + 1
+    })
+  }
+  // 3.UI(JSX)渲染
+  render() {
+    return <button onClick={this.setCount}>{this.state.count}</button>
+  }
+}
 
-  return <div>Child</div>
-} */
 function App() {
-  const list = useMemo(() => [1, 2, 3, 4, 5], []); //useMemo缓存list的值
-  const [count, setCount] = useState(0);
+
   return (
-    <div className="App">
-      <button onClick={() => { setCount(count + 1) }}>count</button>
-      <MemoChild list={list} />
-    </div>
-  );
+    <>
+      <Counter />
+    </>
+  )
 }
 
 export default App;
