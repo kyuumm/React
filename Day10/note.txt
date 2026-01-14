@@ -387,3 +387,58 @@ class Parent extends Component {
       </div>)}}
 
 DAY10-11-zustand
+
+npm i zustand
+
+//1. create a store
+const useStore = create((set) => {
+  return {
+    count: 0,
+    inc: () => {
+      set((state) => ({ count: state.count + 1 }))
+//这里本来给set传入一个对象，因为有处理，所以改成函数，返回对象（{ ··· }）
+//注意，使用state调用count
+    }
+  }
+})
+//2绑定store到组件
+
+function App() {
+  const { count, inc } = useStore()
+  return (
+    <>
+      <button onClick={inc}>{count}</button>
+    </>
+  )
+}
+
+//语法容易出错
+//1.函数参数必须返回一个对象 对象内部编写状态数据和方法
+//2.set是用来修改数据的专门方法必须调用它来修改数据
+//语法1:参数是函数 需要用到老数据的场景
+//语法2:参数直接是一个对象 set({count:100 })
+
+DAY10-12-异步zustand
+
+对于异步的支持不需要特殊的操作，直接在函数中编写异步逻辑，最后只需要调用set方法传入新状态即可 
+const useStore = create((set) => {
+  return {
+    count: 0,
+    inc: () => {
+      set((state) => ({ count: state.count + 1 }))
+    },
+    channelList: [],
+    fetchList: async () => {     //*******
+      const res = await fetch(URL);
+      const jsonRes = await res.json();
+      console.log(jsonRes.data);
+      set({
+        channelList: jsonRes.data.channels
+      })
+    }
+  }
+})
+
+DAY-10-13-zustand切片模式
+
+将store拆分，类似模块化
