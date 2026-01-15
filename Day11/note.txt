@@ -1,0 +1,132 @@
+DAY11-01
+vite
+npm create vite@latest projectName -- --template react-ts
+下载npm（有选项）
+npm run dev
+
+文件内保留App.tsx  main.tsx
+
+DAY11-03-useState-传递泛型参数
+
+useState本身是一个泛型函数，可以传入具体的自定义类型
+type User = {
+	name:string
+	age:number
+const [user,setUser] = useState<User>()
+
+说明:
+1.限制useState函数参数的初始值必须满足类型为:User|()=>User
+2.限制setUser函数的参数必须满足类型为:User | ( ) =>User | undefined
+3.user状态数据具备User类型相关的类型提示
+
+DAY11-04-useState初始值为null
+
+type User={
+	name:string
+	age:number	
+}
+const [user,setUser]=useState<User | null >(null)
+说明:
+1.限制useState函数参数的初始值可以是 User|null
+2.限制setUser函数的参数类型可以是User|null
+
+function App(){	
+```
+	return <>this is { user?.age }</>
+//？的意思是可选，如果user为空，不进行点运算
+//可选链
+}
+
+DAY11-05-Props Ts
+
+props与TypeScript-基础使用
+
+为组件prop添加类型，本质是给函数的参数做类型注解，可以使用type对象类型或者interface接口来做注解
+
+type Props = {className:string
+//interface Props { className:string }//和type相同作用
+
+//还可以再加多个（可选）参数
+//interface Props{ 
+//	className:string 
+//	title?:string  //可选	
+//}
+function Button(props:Props) {
+	const { className } = props
+	return <button className={className}>click me</button>
+}
+说明:
+Button组件只能传入名称为className的prop参数,类型为string,且为必填
+
+DAY11-06-Props TS children
+
+props与TypeScript -为children添加类型 
+children是一个比较特殊的prop，支持多种不同类型数据的传入，需要通过一个内置的ReactNode类型来做注解
+说明:注解之后,children可以是多种类型,包括:React.ReactElement、string、number、React.ReactFragment、 React.ReactPortal、 boolean、 null、 undefined
+
+type Props = {
+	className:string
+	children:React.ReactNode
+}
+function Button(props:Props) {
+	const { className, children } = props
+	return <button className={className}>{children}</button>
+}
+
+DAY11-07-props TS  为事件props添加类型
+
+type Props={
+	onGetMsg : ( msg:string )=>void
+}
+//父组件传给子组件的 onGetMsg 属性，必须是一个函数，这个函数要满足两个要求：
+//必须接收 1 个参数，这个参数的类型必须是 string 字符串
+//这个函数的返回值必须是 void（无返回值 / 不需要 return 任何内容）
+
+function Child( props :Props ){
+	const { onGetMsg }=props
+	const clickHandler = ()=>{
+		onGetMsg?.( ' typeString ' )
+	}
+	return <button onClick={clickHandler}>sendMsg </button>
+}
+function App(){
+	const getMsgHandler=( msg:string )=>{
+	return(
+	<><Child onGetMsg={ (msg)=>xxx }/>
+		<Child onGetMsg={getMsgHandler} />
+	</>
+	)
+
+ }}
+
+1.在组件内部调用时需要遵守类型的约束，参数传递需要满足要求
+2.绑定prop时如果绑定内联函数直接可以推断出参数类型，否则需要单独注解匹配的参数类型
+
+DAY11-08-useRef与TypeScript -获取dom 
+
+获取dom的场景，可以直接把要获取的dom元素的类型当成泛型参数传递给useRef,
+可以推导出.current属性的类型
+
+//1.获取dom
+//2.稳定引用的存储器(定时器管理)
+
+function App() {
+  const domRef = useRef<HTMLInputElement>(null);
+  const timerId = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    domRef.current?.focus();
+    timerId.current = setInterval(() => {
+      console.log('eyy');
+    }, 1000)
+    return () => clearInterval(timerId.current)
+  }, [])
+
+  return (
+    <>
+      <input ref={domRef} />
+    </>
+  )
+}
+// 适合管理那些不需要触发重新渲染但需要在组件生命周期中保持的数据。
+ 

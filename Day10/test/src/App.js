@@ -36,7 +36,6 @@ const createChannelStore = (set) => {
   }
 }
 
-//2组件使用
 const useStore = create((...a) => {
   return {
     ...createCounterStore(...a),
@@ -46,6 +45,7 @@ const useStore = create((...a) => {
 //2绑定store到组件
 
 function App() {
+  //2组件使用
   const { count, inc, fetchList, channelList } = useStore()
   useEffect(() => { fetchList() }, [fetchList])
   return (
