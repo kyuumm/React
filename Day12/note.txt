@@ -1,0 +1,186 @@
+DAY12-01-项目环境
+npm create vite@latest react-jike-mobile -- --template react-ts
+
+说明:
+1.npm createvite@latest固定写法(使用最新版本vite初始化项目)
+2.react-ts-pro项目名称(可以自定义)
+3. -- --template react-ts指定项目模版位react+ts 
+
+antDesign模组
+npm install --save antd-mobile
+
+DAY12-02-配置基础路由
+
+初始化路由
+React的路由初始化，我们采用react-router-dom进行配置
+
+npm i react-router-dom 
+
+**创建组件，文件夹包裹index tsx文件，内部组件，导出
+const Home = () => {
+  return <div>Home</div>
+}
+
+export default Home;
+
+**创建router，router文件夹包裹index tsx
+
+import { createBrowserRouter } from 'react-router-dom';
+import Home from '../pages/Home';
+import Detail from '../pages/Detail';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />
+  },
+  {
+    path: '/detail',
+    element: <Detail />
+  }
+])
+
+export { router };
+
+**修改入口文件 main tsx ， 导入路由，RouterProvider
+
+import { createRoot } from 'react-dom/client'
+import { RouterProvider } from 'react-router-dom'
+import { router } from './router/index.tsx'
+
+createRoot(document.getElementById('root')!).render(
+  <RouterProvider router={router} />
+)
+
+DAY12-04-配置路径别名@
+
+在vite配置文件vite.config.ts中
+
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+})
+
+安装node类型报
+npm i @types/node -D
+
+**2 配置tsconfig app json文件，实现智能路径提示
+加上
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+
+DAY12-05-axios
+npm i axios
+
+//封装axios
+
+import axios from 'axios'
+const httpInstance = axios.create({
+  baseURL: "http://geek.itheima.net",
+  timeout: 5000
+})
+
+httpInstance.interceptors.request.use(
+  (config) => {
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+httpInstance.interceptors.request.use(
+  (response) => {
+    return response
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+export {httpInstance}
+
+DAY12-06-API模块封装，axios+TS
+
+封装API模块-axios和ts的配合使用
+
+场景:axios提供了request泛型方法，方便我们传入类型参数推导出接口返回值的类型
+
+axios.request<Type>(requestConfig).then(res=>{
+	// res.data 的类型为 Type
+	console.log(res.data)
+})
+说明:泛型参数Type 的类型决定了res.data的类型步骤:
+
+1.根据接口文档创建一个通用的泛型接口类型(多个接口返回值的结构是相似的)
+2.根据接口文档创建特有的接口数据类型(每个接口有自己特殊的数据格式)
+3.组合1和2的类型，得到最终传给request泛型的参数类型
+
+需求：
+▼ data    object{1}    响应数据
+    ▼ channels    array[object{2}]    响应频道数组
+        id    integer    频道id
+        name    string    频道名字
+message    string    响应消息
+//——————————————
+import { http } from '@/utils/index'
+//泛型
+type ResType<T> = {
+  message: string,
+  data: T
+}
+
+//具体
+type ChannelItem = {
+  id: number,
+  name: string
+}
+
+type ChannelRes = {
+  channels: ChannelItem[]
+}
+
+//组合
+
+function fetchChannelAPI() {
+  return http.request<ResType<ChannelRes>>({
+    url: '/channels',
+  })
+}
+
+export { fetchChannelAPI }
+
+DAY12-07-Home模块
+
+分为两部分：Tabs和list
+
+tabs：
+实现步骤:
+1.使用ant-mobile组件库中的Tabs组件进行页面结构创建
+2.使用真实接口数据进行渲染
+3.有优化的点进行优化处理
+
+DAY12-08-channels 自定义hook
+
+场景:当前状态数据的各种操作逻辑和组件渲染是写在一起的，可以采用自定义hook封装的方式让逻辑和渲染相分离
+
+实现步骤:
+1.把和Tabs相关的响应式数据状态以及操作数据的方法放到hook函数中
+2.组件中调用hook函数，消费其返回的状态和方法
+
+DAY12-09-List
+
+1.搭建基础结构，并获取基础数据
+2.为组件设计 channelld参数，点击tab时传入不同的参数
