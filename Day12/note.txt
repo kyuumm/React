@@ -184,3 +184,60 @@ DAY12-09-List
 
 1.搭建基础结构，并获取基础数据
 2.为组件设计 channelld参数，点击tab时传入不同的参数
+
+DAY12-10-list无限加载
+
+antMobile-infiniteList
+
+1.滑动到底部触发加载下一页动作
+<InfiniteScroll/>
+2.加载下一页数据
+pre_timestamp 接口参数
+3.把老数据和新数据做拼接处理
+[...oldList, ... newList]
+4.停止监听边界值
+hasMore
+
+DAY12-11-Detail跳转
+
+1.通过路由跳转方法进行跳转，并传递参数
+
+  const goToDetail = (id: string) => {
+    //路由跳转
+    navigate(`/detail?id=${id}`);
+  }
+
+//
+
+2.在详情路由下获取参数，并请求数据
+
+  const [detail, setDetail] = useState<DetailDataType | null>(null)
+
+  const [params] = useSearchParams()
+  //这是React Router提供的一个钩子函数，用于读取和操作URL中的查询参数
+  const id = params.get('id')
+
+3.渲染数据到页面中
+
+  //数据返回前显示
+  if (!detail) {
+    return <div>loading···</div>
+  }
+
+    <NavBar onBack={ back }>{detail?.title}</NavBar>
+    <div dangerouslySetInnerHTML={{
+      __html: detail?.content
+    }}></div>
+
+//渲染有标签的字符串，使用dangerouslySetInnerHTML，内部_ _html
+//避免detail为空，在返回组件前进行判断
+
+小错误：
+  //React 要求 Hooks 必须在每次渲染时以相同的顺序调用
+  //所有的Hooks调用需要在条件判断前
+
+
+返回：
+  const back = () => {
+    navigate(-1)
+  }
